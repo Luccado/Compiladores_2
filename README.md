@@ -53,3 +53,5 @@
 
    ```bash
    cd C:\Users\Lucca\Desktop\compilador\io1\CompApp
+
+**Terminar README e comentar o código**
