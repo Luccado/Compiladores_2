@@ -1,0 +1,14 @@
+C:\Users\Lucca\Desktop\compilador\io1\comp\obj\Debug\net8.0\comp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lucca\Desktop\compilador\io1\comp\obj\Debug\net8.0\comp.AssemblyInfoInputs.cache
+C:\Users\Lucca\Desktop\compilador\io1\comp\obj\Debug\net8.0\comp.AssemblyInfo.cs
+C:\Users\Lucca\Desktop\compilador\io1\comp\obj\Debug\net8.0\comp.csproj.CoreCompileInputs.cache
+C:\Users\Lucca\Desktop\compilador\io1\comp\bin\Debug\net8.0\comp.exe
+C:\Users\Lucca\Desktop\compilador\io1\comp\bin\Debug\net8.0\comp.deps.json
+C:\Users\Lucca\Desktop\compilador\io1\comp\bin\Debug\net8.0\comp.runtimeconfig.json
+C:\Users\Lucca\Desktop\compilador\io1\comp\bin\Debug\net8.0\comp.dll
+C:\Users\Lucca\Desktop\compilador\io1\comp\bin\Debug\net8.0\comp.pdb
+C:\Users\Lucca\Desktop\compilador\io1\comp\obj\Debug\net8.0\comp.dll
+C:\Users\Lucca\Desktop\compilador\io1\comp\obj\Debug\net8.0\refint\comp.dll
+C:\Users\Lucca\Desktop\compilador\io1\comp\obj\Debug\net8.0\comp.pdb
+C:\Users\Lucca\Desktop\compilador\io1\comp\obj\Debug\net8.0\comp.genruntimeconfig.cache
+C:\Users\Lucca\Desktop\compilador\io1\comp\obj\Debug\net8.0\ref\comp.dll
