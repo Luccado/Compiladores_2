@@ -4,16 +4,17 @@ using CompApp.Compiler.Sintatico;
 
 namespace CompApp.Compiler.Semantico
 {
-    public class Symbol
+    public class Symbol 
     {
         public string Name { get; set; }
         public string Type { get; set; }
-        // Outras propriedades podem ser adicionadas aqui
     }
 
-    public class SymbolTable
+    public class SymbolTable // Apemnas a tabela de símbolo para checkar os escopos, metodos e variaveis
     {
         private Stack<Dictionary<string, Symbol>> scopes;
+        public string methodName;
+        public int parametersNumber;
 
         public SymbolTable()
         {

@@ -1,22 +1,18 @@
-﻿public class Teste {
-    public static void main(String[] args) {
-        somar();
+﻿public class Codigo01 {
+    public static void main ( String [ ] args ){
+        double n, a, b;
+        n = 10;
+        a = 0;
+        b = 1;
+        printFibonacci(n, a, b);
     }
-    public static double somar(){
-        double cont;
-        double a,b,c;
-        cont = 10;
-        while(cont > 0) {
-            a = lerDouble();
-            b = lerDouble();
-            if (a > b) {
-                c = a - b;
-            } else {
-                c = b - a;
-            }
-            System.out.println(c);
-            cont = cont - 1;
+    public static double printFibonacci(double n, double a, double  b){
+        if (n > 0) {
+            System.out.println(a);
+            n = n-1;
+            a = a + b;
+            printFibonacci(n, b, a);
         }
-        return c;
+        return 0.0;
     }
 }

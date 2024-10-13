@@ -10,8 +10,10 @@ namespace CompApp.Compiler.Sintatico
         private List<Token> tokens; // tokens gerados
         private int position = 0; //posição inicializada no 0
         private Token currentToken; //token atual
+        public string methodName = "";
+        public int argumentsNumber = 0;
 
-        public Parser(List<Token> tokens)
+        public Parser(List<Token> tokens) // Lista de tokens
         {
             this.tokens = tokens;
             currentToken = tokens[position];
@@ -70,16 +72,16 @@ namespace CompApp.Compiler.Sintatico
                 Match(TokenType.Keyword, "public");
                 Match(TokenType.Keyword, "static");
                 string returnType = TIPO();
-                string methodName = Match(TokenType.Identifier).Value;
+                methodName = Match(TokenType.Identifier).Value;
+                
                 Match(TokenType.Symbol, "(");
                 List<ParameterNode> parameters = PARAMS();
+                argumentsNumber = parameters.Count;
                 Match(TokenType.Symbol, ")");
 
                 Match(TokenType.Symbol, "{");
                 List<StatementNode> commands = CMDS();
-                //encaixar return
-                //expre
-                // ;
+                //return
                 Match(TokenType.Symbol, "}"); 
 
                 return new MethodNode
@@ -108,7 +110,7 @@ namespace CompApp.Compiler.Sintatico
             }
             else
             {
-                return new List<ParameterNode>(); // sem parâmetro
+                return new List<ParameterNode>(); // Sem parâmetro
             }
         }
 
@@ -121,7 +123,7 @@ namespace CompApp.Compiler.Sintatico
             }
             else
             {
-                return new List<ParameterNode>(); // sem mais parâmetros
+                return new List<ParameterNode>(); // Sem mais parâmetros
             }
         }
 
@@ -138,7 +140,7 @@ namespace CompApp.Compiler.Sintatico
             }
         }
 
-        private List<StatementNode> CMDS() // tudo que tá dentro do {}
+        private List<StatementNode> CMDS() // Tudo que tá dentro do {}
         {
             List<StatementNode> commands = new List<StatementNode>();
 
@@ -220,7 +222,7 @@ namespace CompApp.Compiler.Sintatico
             else if (Lookahead(TokenType.Symbol, "("))
             {
                 Match(TokenType.Symbol, "(");
-                List<ExpressionNode> args = LISTA_ARG();
+                List<VariableNode> args = LISTA_ARG();
                 Match(TokenType.Symbol, ")");
 
                 return new MethodCallNode { MethodName = id, Arguments = args }; // retorna a chamada do método
@@ -231,21 +233,30 @@ namespace CompApp.Compiler.Sintatico
             }
         }
 
-        private List<ExpressionNode> LISTA_ARG() // analisa a lista de argumento na chamada do método enquanto semparado por ,
+        private List<VariableNode> LISTA_ARG() // analisa a lista de argumento na chamada do método enquanto semparado por ,
         {
-            List<ExpressionNode> args = new List<ExpressionNode>();
+            List<VariableNode> args = new List<VariableNode>();
 
             if (!Lookahead(TokenType.Symbol, ")"))
             {
-                args.Add(EXPRESSAO());
+
+                string paramName = Match(TokenType.Identifier).Value;
+                args.Add(new VariableNode { Name = paramName });
+                
                 while (Lookahead(TokenType.Symbol, ","))
                 {
                     Match(TokenType.Symbol, ",");
-                    args.Add(EXPRESSAO());
+                    args.Add(ARG());
                 }
             }
 
             return args;
+        }
+
+        private VariableNode ARG()
+        {
+            string paramName = Match(TokenType.Identifier).Value;
+            return new VariableNode { Name = paramName };
         }
 
         private ExpressionNode EXP_IDENT() //EXP_IDENT
@@ -489,12 +500,13 @@ namespace CompApp.Compiler.Sintatico
                 if (Lookahead(TokenType.Symbol, "("))
                 {
                     Match(TokenType.Symbol, "(");
-                    List<ExpressionNode> args = LISTA_ARG();
+                    List<VariableNode> args = LISTA_ARG();
                     Match(TokenType.Symbol, ")");
                     return new FunctionCallNode { FunctionName = name, Arguments = args };
                 }
                 else
                 {
+                    
                     return new VariableNode { Name = name };
                 }
             }
@@ -518,7 +530,7 @@ namespace CompApp.Compiler.Sintatico
 
         // Funções auxiliares
 
-        private Token Match(TokenType expectedType, string expectedValue = null)
+        private Token Match(TokenType expectedType, string expectedValue = null) // Verifica se o token atual corresponde ao esperado e vai para o prox token
         {
             if (currentToken.Type == expectedType && (expectedValue == null || currentToken.Value == expectedValue))
             {
@@ -532,7 +544,7 @@ namespace CompApp.Compiler.Sintatico
             }
         }
 
-        private void Advance()
+        private void Advance() // Avança prox token
         {
             position++;
             if (position < tokens.Count)

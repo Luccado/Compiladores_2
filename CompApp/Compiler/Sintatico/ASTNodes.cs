@@ -67,7 +67,9 @@ namespace CompApp.Compiler.Sintatico
     public class MethodCallNode : StatementNode
     {
         public string MethodName { get; set; }
-        public List<ExpressionNode> Arguments { get; set; }
+        
+        public List<VariableNode> Arguments { get; set; }
+        
     }
 
     public class ReturnNode : StatementNode
@@ -112,6 +114,6 @@ namespace CompApp.Compiler.Sintatico
     public class FunctionCallNode : ExpressionNode
     {
         public string FunctionName { get; set; }
-        public List<ExpressionNode> Arguments { get; set; }
+        public List<VariableNode> Arguments { get; set; }
     }
 }

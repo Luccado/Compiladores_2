@@ -6,7 +6,7 @@ namespace CompApp.Compiler.Semantico
 {
     public class SemanticAnalyzer
     {
-        private SymbolTable symbolTable;
+        public SymbolTable symbolTable;
 
         public SemanticAnalyzer()
         {
@@ -20,11 +20,11 @@ namespace CompApp.Compiler.Semantico
             AnalyzeStatements(program.MainMethod.Statements);
             symbolTable.ExitScope();
 
-            // Analisar o método adicional se existir
+            // Analisar o método adicional se tiver
             if (program.Method != null)
             {
                 symbolTable.EnterScope();
-                // Adicionar parâmetros à tabela de símbolos
+                // Adicionar parâmetros na tabela de símbolos
                 foreach (var param in program.Method.Parameters)
                 {
                     if (!symbolTable.AddSymbol(new Symbol
@@ -50,7 +50,7 @@ namespace CompApp.Compiler.Semantico
             }
         }
 
-        private void AnalyzeStatement(StatementNode stmt)
+        private void AnalyzeStatement(StatementNode stmt) // Verificação semântica e de tipo. Se eu tiver problema futuro com declaração de variável vai ser aqui o problema
         {
             if (stmt is DeclarationNode decl)
             {
@@ -98,17 +98,31 @@ namespace CompApp.Compiler.Semantico
             }
             else if (stmt is MethodCallNode call)
             {
-                // Implementar verificação se necessário
-                // Por exemplo, verificar se a função chamada existe
+                if (!call.MethodName.Equals(symbolTable.methodName))
+                {
+                    throw new Exception($"Método '{call.MethodName}' não declarado.");
+                }
+                
+                if (call.Arguments.Count != symbolTable.parametersNumber)
+                {
+                    throw new Exception($"{call.Arguments.Count} é a quantidade de argumentos errada.");
+                }
+                foreach (var varName in call.Arguments)
+                {
+                    Symbol symbol = symbolTable.GetSymbol(varName.Name);
+                    if (symbol == null)
+                    {
+                        throw new Exception($"Variável '{varName.Name}' não declarada.");
+                    }
+                }
             }
             else if (stmt is ReturnNode returnNode)
             {
                 AnalyzeExpression(returnNode.Expression);
-                // Verificações adicionais podem ser adicionadas aqui
             }
         }
 
-        private void AnalyzeExpression(ExpressionNode expr)
+        private void AnalyzeExpression(ExpressionNode expr) // Verificação de expressão
         {
             if (expr is BinaryExpressionNode binExpr)
             {
@@ -144,12 +158,11 @@ namespace CompApp.Compiler.Semantico
             {
                 if (funcCall.FunctionName == "lerDouble")
                 {
-                    // Função embutida, nenhum tratamento adicional necessário
+                    // Não entendi direito o lerDouble mas assim deu
                 }
                 else
                 {
-                    // Verificar se a função foi declarada
-                    // Para simplificar, assumimos que todas as funções estão definidas
+                    // Só para ver se foi declarada mesmo
                 }
 
                 foreach (var arg in funcCall.Arguments)

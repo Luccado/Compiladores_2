@@ -8,10 +8,13 @@ namespace CompApp.Compiler.GeradorDeCodigo
     public class CodeGenerator
     {
         private List<string> instructions;
-        private int labelCount = 0;
+        private int position;
+        private int labelCount = 0; //label único
         private Dictionary<string, int> variableAddresses; //nome e posição
         private int nextAddress = 0; //endereço único
-
+        
+        
+        
         //construtor
         public CodeGenerator()
         {
@@ -19,21 +22,56 @@ namespace CompApp.Compiler.GeradorDeCodigo
             variableAddresses = new Dictionary<string, int>();
         }
 
+        public void AddInstruction(string instruction)
+        {
+            instructions.Add(instruction);
+            position++;
+        }
+
         public void GenerateCode(ProgramNode program)
         {
             GenerateStatements(program.MainMethod.Statements); // para o main
-
+            AddInstruction($"PARA");
             if (program.Method != null) // para métodos adicionais
             {
                 GenerateMethod(program.Method);
+                int j = 0, positionM = -1;
+                var nM = program.Method.Name;
+                
+                foreach (var instruction in instructions.ToList())
+                {
+                    if (instruction.Equals("PARA"))
+                    {
+                        positionM = j + 1;
+                        break;
+                    }
+                    j++;
+                }
+                
+                var i = 0;
+                foreach (var instruction in instructions.ToList())
+                {
+                    // Substituir todas as ocorrências de nM pelo nome do método
+                    instructions[i] = instruction.Replace(nM, positionM.ToString());
+                    i++;
+                }
+
+                
             }
+            
+            
         }
 
         private void GenerateMethod(MethodNode method)
         {
-            instructions.Add($"{method.Name}:");
+            for (int i = method.Parameters.Count - 1; i >= 0; i--)
+            {
+                var parameter = method.Parameters[i];
+                AddInstruction($"ALME {parameter.Name}");
+                AddInstruction($"ARMZ {parameter.Name}");
+            }
             GenerateStatements(method.Statements);
-            instructions.Add("RET"); //Retornar do método
+            AddInstruction("RTPR"); //Retornar do método
         }
 
         private void GenerateStatements(List<StatementNode> statements) //Gerar código da lista
@@ -46,71 +84,95 @@ namespace CompApp.Compiler.GeradorDeCodigo
 
         private void GenerateStatement(StatementNode stmt)
         {
+            
             if (stmt is DeclarationNode decl) // para declarar variável + armazena
             {
                 foreach (var varName in decl.Variables)
                 {
-                    if (!variableAddresses.ContainsKey(varName)) // inicializado com o LOAD_CONST 0
-                    {
+                    
                         variableAddresses[varName] = nextAddress++;
-                        instructions.Add($"LOAD_CONST 0");
-                        instructions.Add($"STORE {variableAddresses[varName]}");
-                    }
+                        //AddInstruction($"LOAD_CONST 0");
+                        //AddInstruction($"STORE {variableAddresses[varName]}");
+                        AddInstruction($"ALME {varName}");
+                    
                 }
             }
             else if (stmt is AssignmentNode assign) // expressão + armazena
             {
                 GenerateExpression(assign.Expression);
                 int address = GetVariableAddress(assign.Variable);
-                instructions.Add($"STORE {address}");
+                //AddInstruction($"STORE {address}");
+                AddInstruction($"ARMZ {assign.Variable}");
             }
             else if (stmt is IfNode ifNode) // IF
             {
+
+                
+                    
                 GenerateExpression(ifNode.Condition);
-                instructions.Add("PUSH");
-                instructions.Add("LOAD_CONST 0");
-                instructions.Add("EQ"); // Compara com 0
+                
+                int positionDsvf = position;
+                AddInstruction($"DSVF ");
+                
+
                 string elseLabel = GenerateLabel();
                 string endLabel = GenerateLabel();
-
-                instructions.Add($"JZ {elseLabel}"); // falso = salta para else
+                
                 GenerateStatements(ifNode.TrueBranch);
-                instructions.Add($"JMP {endLabel}"); // true = salta para o fim
-                instructions.Add($"{elseLabel}:"); // ELSE
+                
                 if (ifNode.FalseBranch != null)
                 {
+                    int positionDsvi = position;
+                    AddInstruction($"DSVI ");
+                    instructions[positionDsvf] += $"{position}";
                     GenerateStatements(ifNode.FalseBranch);
+                    instructions[positionDsvi] += $"{position}";
                 }
-                instructions.Add($"{endLabel}:");
+                else
+                {
+                    instructions[positionDsvf] += $"{position}";
+                }
+                
             }
             else if (stmt is WhileNode whileNode) // WHILE
             {
                 string startLabel = GenerateLabel();
                 string endLabel = GenerateLabel();
-
-                instructions.Add($"{startLabel}:");
+                int positionCondition = position;
+                
                 GenerateExpression(whileNode.Condition);
-                instructions.Add("PUSH");
-                instructions.Add("LOAD_CONST 0");
-                instructions.Add("EQ"); // compara
-                instructions.Add($"JZ {endLabel}"); // false = sai do loop
+                int positionDsvf = position;
+                AddInstruction($"DSVF ");
                 GenerateStatements(whileNode.Body);
-                instructions.Add($"JMP {startLabel}"); //return para o início para checar a condição
-                instructions.Add($"{endLabel}:");
+                AddInstruction($"DSVI {positionCondition}");
+                instructions[positionDsvf] += $"{position}";
+
             }
             else if (stmt is PrintNode print) // PRINT
             {
                 GenerateExpression(print.Expression);
-                instructions.Add("PRINT");
+                AddInstruction("IMPR");
             }
             else if (stmt is MethodCallNode call) // CALL
             {
-                instructions.Add($"CALL {call.MethodName}");
+                int positionPshr = position;
+                AddInstruction($"PSHR ");
+
+                foreach (var argument in call.Arguments)
+                {
+                    AddInstruction($"CRVL {argument.Name}");
+                }
+                
+                AddInstruction($"CHPR {call.MethodName}");
+                instructions[positionPshr] += $"{position}";
+                //AddInstruction($"PARA");
+
+
             }
             else if (stmt is ReturnNode returnNode) // RETURN
             {
                 GenerateExpression(returnNode.Expression);
-                instructions.Add("RET");
+                //AddInstruction("RTPR");
             }
         }
 
@@ -118,31 +180,31 @@ namespace CompApp.Compiler.GeradorDeCodigo
         {
             if (expr is NumberNode num) // valor constante na pilha
             {
-                instructions.Add($"LOAD_CONST {num.Value}");
+                AddInstruction($"CRCT {num.Value}");
             }
             else if (expr is VariableNode varNode) // load da variável
             {
                 int address = GetVariableAddress(varNode.Name);
-                instructions.Add($"LOAD {address}");
+                AddInstruction($"CRVL {varNode.Name}");
             }
             else if (expr is BinaryExpressionNode binExpr) // operadores binários (+, -, * e /)
             {
                 GenerateExpression(binExpr.Left);
-                instructions.Add("PUSH"); // Empilha o valor do operando esquerdo
+                //AddInstruction("PUSH"); // Empilha o valor do operando esquerdo
                 GenerateExpression(binExpr.Right);
                 switch (binExpr.Operator)
                 {
                     case "+":
-                        instructions.Add("ADD");
+                        AddInstruction("SOMA");
                         break;
                     case "-":
-                        instructions.Add("SUB");
+                        AddInstruction("SUBT");
                         break;
                     case "*":
-                        instructions.Add("MUL");
+                        AddInstruction("MULT");
                         break;
                     case "/":
-                        instructions.Add("DIV");
+                        AddInstruction("DIVI");
                         break;
                 }
             }
@@ -151,37 +213,37 @@ namespace CompApp.Compiler.GeradorDeCodigo
                 GenerateExpression(unExpr.Expression);
                 if (unExpr.Operator == "-")
                 {
-                    instructions.Add("NEG");
+                    AddInstruction("INVE");
                 }
             }
             else if (expr is ReadDoubleNode) // READ
             {
-                instructions.Add("READ");
+                AddInstruction("LEIT");
             }
             else if (expr is ConditionNode cond) // Condições (> , < , == , != , >= , <= )
             {
                 GenerateExpression(cond.Left); // gerar a instrução
-                instructions.Add("PUSH"); // Empilha o valor do operando esquerdo
+                //AddInstruction("PUSH"); // Empilha o valor do operando esquerdo
                 GenerateExpression(cond.Right); // gera dnv
                 switch (cond.Operator)
                 {
                     case ">":
-                        instructions.Add("GT");
+                        AddInstruction("CPMA");
                         break;
                     case "<":
-                        instructions.Add("LT");
+                        AddInstruction("CPME");
                         break;
                     case "==":
-                        instructions.Add("EQ");
+                        AddInstruction("CPIG");
                         break;
                     case "!=":
-                        instructions.Add("NE");
+                        AddInstruction("CDES");
                         break;
                     case ">=":
-                        instructions.Add("GE");
+                        AddInstruction("CMAI");
                         break;
                     case "<=":
-                        instructions.Add("LE");
+                        AddInstruction("CPMI");
                         break;
                 }
             }
@@ -189,11 +251,11 @@ namespace CompApp.Compiler.GeradorDeCodigo
             {
                 if (funcCall.FunctionName == "lerDouble")
                 {
-                    instructions.Add("READ");
+                    AddInstruction("LEIT");
                 }
                 else
                 {
-                    instructions.Add($"CALL {funcCall.FunctionName}");
+                    AddInstruction($"CALL {funcCall.FunctionName}");
                 }
             }
         }
@@ -204,8 +266,9 @@ namespace CompApp.Compiler.GeradorDeCodigo
             {
                 variableAddresses[name] = nextAddress++;
                 address = variableAddresses[name];
-                instructions.Add($"LOAD_CONST 0"); // começa com 0
-                instructions.Add($"STORE {address}"); // armazena o endere
+                //AddInstruction($"LOAD_CONST 0"); // começa com 0
+                //AddInstruction($"STORE {address}"); // armazena o endere
+                //AddInstruction($"ALME");
             }
             return address;
         }

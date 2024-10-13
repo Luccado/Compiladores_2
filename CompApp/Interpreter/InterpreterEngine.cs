@@ -6,190 +6,189 @@ namespace CompApp.Interpreter
 {
     public class InterpreterEngine
     {
-        private List<string> instructions;
+        private List<string[]> instructions;
         private int instructionPointer = 0;
-        private Dictionary<int, double> memory;
-        private double accumulator = 0;
-        private Dictionary<string, int> labels;
-        private Stack<int> callStack;
+        private Stack<Dictionary<string, double>> registersStack;
+        private Stack<double> dataStack;
 
         public InterpreterEngine()
         {
-            memory = new Dictionary<int, double>();
-            labels = new Dictionary<string, int>();
-            callStack = new Stack<int>();
+            registersStack = new Stack<Dictionary<string, double>>();
+            registersStack.Push(new Dictionary<string, double>());
+            dataStack = new Stack<double>();
+            instructions = new List<string[]>();
         }
 
         public void LoadInstructions(string filePath)
         {
-            instructions = new List<string>(File.ReadAllLines(filePath));
+            var list = new List<string>(File.ReadAllLines(filePath));
             // Pré-processar labels
-            for (int i = 0; i < instructions.Count; i++)
+            for (int i = 0; i < list.Count; i++)
             {
-                string line = instructions[i].Trim();
-                if (line.EndsWith(":"))
+                string line = list[i].Trim();
+                if (!string.IsNullOrWhiteSpace(line))
                 {
-                    string label = line.TrimEnd(':');
-                    labels[label] = i;
+                    instructions.Add(line.Split(' '));
                 }
             }
         }
 
-        public void Run()
+        public void Run() // Interpretador do gerador de código
         {
-            while (instructionPointer < instructions.Count)
+            while (true)
             {
-                string line = instructions[instructionPointer].Trim();
-
-                if (string.IsNullOrEmpty(line) || line.EndsWith(":"))
-                {
-                    instructionPointer++;
-                    continue;
-                }
-
-                string[] parts = line.Split(' ');
+                string[] parts = instructions[instructionPointer];
+                
                 string instruction = parts[0];
-                string argument = parts.Length > 1 ? string.Join(" ", parts, 1, parts.Length - 1) : null;
+                string argument = "";
+                if (parts.Length > 1)
+                {
+                    argument = parts[1];
+                }
 
-                Console.WriteLine($"> Executando: {line}");
-
+                //Console.WriteLine($"> Executando: {line}");
+                //Console.WriteLine($"TESTEEEEEEEEEEEEE-----");
                 try
-                {
-                    switch (instruction)
                     {
-                        case "LOAD_CONST":
-                            accumulator = double.Parse(argument);
-                            break;
-                        case "LOAD":
-                            {
-                                int address = int.Parse(argument);
-                                if (!memory.ContainsKey(address))
-                                    throw new Exception($"Endereço de memória {address} não inicializado.");
-                                accumulator = memory[address];
+                        double pos = 0.0;
+                        switch (instruction)
+                        {
+                            case "ALME":
+                                AllocateRegister(argument);
                                 break;
-                            }
-                        case "STORE":
-                            {
-                                int address = int.Parse(argument);
-                                memory[address] = accumulator;
+                            case "PSHR":
+                                pos = double.Parse(argument);
+                                Push(pos);
                                 break;
-                            }
-                        case "PUSH":
-                            Push(accumulator);
-                            break;
-                        case "POP":
-                            accumulator = Pop();
-                            break;
-                        case "ADD":
-                            accumulator = Pop() + accumulator;
-                            break;
-                        case "SUB":
-                            accumulator = Pop() - accumulator;
-                            break;
-                        case "MUL":
-                            accumulator = Pop() * accumulator;
-                            break;
-                        case "DIV":
-                            {
-                                double divisor = Pop();
-                                if (divisor == 0)
-                                    throw new DivideByZeroException("Divisão por zero.");
-                                accumulator /= divisor;
+                            case "CHPR":
+                                instructionPointer = int.Parse(argument) - 1;
+                                registersStack.Push(new Dictionary<string, double>());
                                 break;
-                            }
-                        case "NEG":
-                            accumulator = -accumulator;
-                            break;
-                        case "PRINT":
-                            Console.WriteLine($"[OUTPUT]: {accumulator}");
-                            break;
-                        case "READ":
-                            Console.Write("Digite um número: ");
-                            if (double.TryParse(Console.ReadLine(), out double input))
-                            {
-                                accumulator = input;
-                            }
-                            else
-                            {
-                                throw new Exception("Entrada inválida.");
-                            }
-                            break;
-                        case "JMP":
-                            if (!labels.ContainsKey(argument))
-                                throw new Exception($"Label '{argument}' não encontrada.");
-                            instructionPointer = labels[argument];
-                            continue;
-                        case "JZ":
-                            if (accumulator == 0)
-                            {
-                                if (!labels.ContainsKey(argument))
-                                    throw new Exception($"Label '{argument}' não encontrada.");
-                                instructionPointer = labels[argument];
-                                continue;
-                            }
-                            break;
-                        case "CALL":
-                            if (!labels.ContainsKey(argument))
-                                throw new Exception($"Função '{argument}' não encontrada.");
-                            callStack.Push(instructionPointer + 1);
-                            instructionPointer = labels[argument];
-                            continue;
-                        case "RET":
-                            if (callStack.Count > 0)
-                            {
-                                instructionPointer = callStack.Pop();
-                                continue;
-                            }
-                            else
-                            {
-                                instructionPointer = instructions.Count; // Termina a execução
+                            case "RTPR":
+                                dataStack.Pop();
+                                instructionPointer = Convert.ToInt32(dataStack.Pop()) - 1;
+                                registersStack.Pop();
                                 break;
-                            }
-                        case "GT":
-                            accumulator = Pop() > accumulator ? 1 : 0;
-                            break;
-                        case "LT":
-                            accumulator = Pop() < accumulator ? 1 : 0;
-                            break;
-                        case "EQ":
-                            accumulator = Pop() == accumulator ? 1 : 0;
-                            break;
-                        case "NE":
-                            accumulator = Pop() != accumulator ? 1 : 0;
-                            break;
-                        case "GE":
-                            accumulator = Pop() >= accumulator ? 1 : 0;
-                            break;
-                        case "LE":
-                            accumulator = Pop() <= accumulator ? 1 : 0;
-                            break;
-                        default:
-                            throw new Exception($"Instrução desconhecida: {instruction}");
+                            case "ARMZ":
+                                double valueToStore = dataStack.Pop();
+                                registersStack.Peek()[argument] = valueToStore;
+                                break;
+                            case "DSVI":
+                                instructionPointer = int.Parse(argument) - 1;
+                                break;
+                            case "DSVF":
+                                double condition = dataStack.Pop();
+                                if (condition == 0)
+                                    instructionPointer = int.Parse(argument) - 1;
+                                break;
+                            case "CRCT":
+                                Push(double.Parse(argument));
+                                break;
+                            case "CRVL":
+                                double registerValue = registersStack.Peek()[argument];
+                                Push(registerValue);
+                                break;
+                            case "SOMA":
+                                double sumFirst = dataStack.Pop();
+                                double sumSecond = dataStack.Pop();
+                                Push(sumSecond + sumFirst);
+                                break;
+                            case "SUBT":
+                                double subFirst = dataStack.Pop();
+                                double subSecond = dataStack.Pop();
+                                Push(subSecond - subFirst);
+                                break;
+                            case "MULT":
+                                double multFirst = dataStack.Pop();
+                                double multSecond = dataStack.Pop();
+                                Push(multSecond * multFirst);
+                                break;
+                            case "DIVI":
+                                double divFirst = dataStack.Pop();
+                                double divSecond = dataStack.Pop();
+                                Push(divSecond / divFirst);
+                                break;
+                            case "INVE":
+                                double invertValue = dataStack.Pop();
+                                Push(-invertValue);
+                                break;
+                            case "CPME":
+                                double cmpLessFirst = dataStack.Pop();
+                                double cmpLessSecond = dataStack.Pop();
+                                Push(cmpLessSecond < cmpLessFirst ? 1 : 0);
+                                break;
+                            case "CPMA":
+                                double cmpGreaterFirst = dataStack.Pop();
+                                double cmpGreaterSecond = dataStack.Pop();
+                                Push(cmpGreaterSecond > cmpGreaterFirst ? 1 : 0);
+                                break;
+                            case "CPIG":
+                                double cmpEqualFirst = dataStack.Pop();
+                                double cmpEqualSecond = dataStack.Pop();
+                                Push(cmpEqualSecond == cmpEqualFirst ? 1 : 0);
+                                break;
+                            case "CDES":
+                                double cmpNotEqualFirst = dataStack.Pop();
+                                double cmpNotEqualSecond = dataStack.Pop();
+                                Push(cmpNotEqualSecond != cmpNotEqualFirst ? 1 : 0);
+                                break;
+                            case "CPMI":
+                                double cmpLessEqualFirst = dataStack.Pop();
+                                double cmpLessEqualSecond = dataStack.Pop();
+                                Push(cmpLessEqualSecond <= cmpLessEqualFirst ? 1 : 0);
+                                break;
+                            case "CMAI":
+                                double cmpGreaterEqualFirst = dataStack.Pop();
+                                double cmpGreaterEqualSecond = dataStack.Pop();
+                                Push(cmpGreaterEqualSecond >= cmpGreaterEqualFirst ? 1 : 0);
+                                break;
+                            case "LEIT":
+                                Console.Write("Digite um número: ");
+                                double input = double.Parse(Console.ReadLine());
+                                Push(input);
+                                break;
+                            case "IMPR":
+                                double printValue = dataStack.Pop();
+                                Console.WriteLine(printValue);
+                                break;
+                            case "PARA":
+                                return;
+                            default:
+                                Console.WriteLine($"Instrução '{instruction}' não é aceita!");
+                                return;
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Erro na instrução '{line}' na linha {instructionPointer + 1}: {ex.Message}");
-                }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Erro na execução: {ex.Message}");
+                        return;
+                    }
 
-                instructionPointer++;
+                    instructionPointer++;
+
+                
+            
             }
         }
-
-        private Stack<double> stack = new Stack<double>();
+        
+        private void AllocateRegister(string register)
+        {
+            registersStack.Peek()[register] = 0;
+        }
+        
 
         private void Push(double value)
         {
-            stack.Push(value);
+            dataStack.Push(value);
         }
 
         private double Pop()
         {
-            if (stack.Count == 0)
+            if (dataStack.Count == 0)
             {
                 throw new Exception("Pilha vazia.");
             }
-            return stack.Pop();
+            return dataStack.Pop();
         }
     }
 }

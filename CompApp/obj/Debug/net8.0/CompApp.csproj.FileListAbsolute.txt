@@ -44,3 +44,51 @@ C:\Users\Lucca\Desktop\CompApp\obj\Debug\net8.0\refint\CompApp.dll
 C:\Users\Lucca\Desktop\CompApp\obj\Debug\net8.0\CompApp.pdb
 C:\Users\Lucca\Desktop\CompApp\obj\Debug\net8.0\CompApp.genruntimeconfig.cache
 C:\Users\Lucca\Desktop\CompApp\obj\Debug\net8.0\ref\CompApp.dll
+C:\Users\Carlos Rafael\Desktop\CompApp\bin\Debug\net8.0\Input\codigo_entrada.txt
+C:\Users\Carlos Rafael\Desktop\CompApp\bin\Debug\net8.0\Output\codigo_objeto.txt
+C:\Users\Carlos Rafael\Desktop\CompApp\bin\Debug\net8.0\CompApp.exe
+C:\Users\Carlos Rafael\Desktop\CompApp\bin\Debug\net8.0\CompApp.deps.json
+C:\Users\Carlos Rafael\Desktop\CompApp\bin\Debug\net8.0\CompApp.runtimeconfig.json
+C:\Users\Carlos Rafael\Desktop\CompApp\bin\Debug\net8.0\CompApp.dll
+C:\Users\Carlos Rafael\Desktop\CompApp\bin\Debug\net8.0\CompApp.pdb
+C:\Users\Carlos Rafael\Desktop\CompApp\obj\Debug\net8.0\CompApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Carlos Rafael\Desktop\CompApp\obj\Debug\net8.0\CompApp.AssemblyInfoInputs.cache
+C:\Users\Carlos Rafael\Desktop\CompApp\obj\Debug\net8.0\CompApp.AssemblyInfo.cs
+C:\Users\Carlos Rafael\Desktop\CompApp\obj\Debug\net8.0\CompApp.csproj.CoreCompileInputs.cache
+C:\Users\Carlos Rafael\Desktop\CompApp\obj\Debug\net8.0\CompApp.dll
+C:\Users\Carlos Rafael\Desktop\CompApp\obj\Debug\net8.0\refint\CompApp.dll
+C:\Users\Carlos Rafael\Desktop\CompApp\obj\Debug\net8.0\CompApp.pdb
+C:\Users\Carlos Rafael\Desktop\CompApp\obj\Debug\net8.0\CompApp.genruntimeconfig.cache
+C:\Users\Carlos Rafael\Desktop\CompApp\obj\Debug\net8.0\ref\CompApp.dll
+C:\Users\Lucca\Desktop\compv2\CompApp\bin\Debug\net8.0\Input\codigo_entrada.txt
+C:\Users\Lucca\Desktop\compv2\CompApp\bin\Debug\net8.0\Output\codigo_objeto.txt
+C:\Users\Lucca\Desktop\compv2\CompApp\bin\Debug\net8.0\CompApp.exe
+C:\Users\Lucca\Desktop\compv2\CompApp\bin\Debug\net8.0\CompApp.deps.json
+C:\Users\Lucca\Desktop\compv2\CompApp\bin\Debug\net8.0\CompApp.runtimeconfig.json
+C:\Users\Lucca\Desktop\compv2\CompApp\bin\Debug\net8.0\CompApp.dll
+C:\Users\Lucca\Desktop\compv2\CompApp\bin\Debug\net8.0\CompApp.pdb
+C:\Users\Lucca\Desktop\compv2\CompApp\obj\Debug\net8.0\CompApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lucca\Desktop\compv2\CompApp\obj\Debug\net8.0\CompApp.AssemblyInfoInputs.cache
+C:\Users\Lucca\Desktop\compv2\CompApp\obj\Debug\net8.0\CompApp.AssemblyInfo.cs
+C:\Users\Lucca\Desktop\compv2\CompApp\obj\Debug\net8.0\CompApp.csproj.CoreCompileInputs.cache
+C:\Users\Lucca\Desktop\compv2\CompApp\obj\Debug\net8.0\CompApp.dll
+C:\Users\Lucca\Desktop\compv2\CompApp\obj\Debug\net8.0\refint\CompApp.dll
+C:\Users\Lucca\Desktop\compv2\CompApp\obj\Debug\net8.0\CompApp.pdb
+C:\Users\Lucca\Desktop\compv2\CompApp\obj\Debug\net8.0\CompApp.genruntimeconfig.cache
+C:\Users\Lucca\Desktop\compv2\CompApp\obj\Debug\net8.0\ref\CompApp.dll
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\bin\Debug\net8.0\Input\codigo_entrada.txt
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\bin\Debug\net8.0\Output\codigo_objeto.txt
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\bin\Debug\net8.0\CompApp.exe
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\bin\Debug\net8.0\CompApp.deps.json
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\bin\Debug\net8.0\CompApp.runtimeconfig.json
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\bin\Debug\net8.0\CompApp.dll
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\bin\Debug\net8.0\CompApp.pdb
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\obj\Debug\net8.0\CompApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\obj\Debug\net8.0\CompApp.AssemblyInfoInputs.cache
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\obj\Debug\net8.0\CompApp.AssemblyInfo.cs
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\obj\Debug\net8.0\CompApp.csproj.CoreCompileInputs.cache
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\obj\Debug\net8.0\CompApp.dll
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\obj\Debug\net8.0\refint\CompApp.dll
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\obj\Debug\net8.0\CompApp.pdb
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\obj\Debug\net8.0\CompApp.genruntimeconfig.cache
+C:\Users\Carlos Rafael\Desktop\teste\CompApp\obj\Debug\net8.0\ref\CompApp.dll

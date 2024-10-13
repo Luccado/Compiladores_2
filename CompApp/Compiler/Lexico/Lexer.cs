@@ -127,9 +127,9 @@ namespace CompApp.Compiler.Lexico
             return tokens;
         }
 
-        private void HandleWhitespace() // método para tratar e contar espaço em branco
+        private void HandleWhitespace() // Método para tratar e contar espaço em branco
         {
-            if (source[position] == '\n') //quebra de linha = + linha e reseta a coluna
+            if (source[position] == '\n') // Quebra de linha = + linha e reseta a coluna
             {
                 line++;
                 column = 1;
@@ -141,7 +141,7 @@ namespace CompApp.Compiler.Lexico
             position++;
         }
 
-        private void AdvancePosition(int length)
+        private void AdvancePosition(int length) // Método para avançar posição
         {
             for (int i = 0; i < length; i++)
             {

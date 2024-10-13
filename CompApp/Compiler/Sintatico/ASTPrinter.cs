@@ -7,7 +7,7 @@ namespace CompApp.Compiler.Sintatico
     {
         private int indentLevel = 0;
 
-        public void Print(ProgramNode node)
+        public void Print(ProgramNode node) // Basicamente percorre a árvore e imprime os nó (falta identação)
         {
             Console.WriteLine("Program");
             indentLevel++;
@@ -119,7 +119,9 @@ namespace CompApp.Compiler.Sintatico
                     indentLevel--;
                     break;
                 case MethodCallNode call:
+                    //String args = string.Join(", ", call.Arguments.Name);
                     Console.WriteLine($"{Indent()}MethodCall: {call.MethodName}()");
+                    
                     break;
                 case ReturnNode returnNode:
                     Console.WriteLine($"{Indent()}Return:");

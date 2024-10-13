@@ -15,10 +15,11 @@ namespace CompApp
         {
             // Obtém o diretório do executável
             string exeDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.FullName;
 
             // Define os diretórios Input e Output
             string inputDirectory = Path.Combine(exeDirectory, "Input");
-            string outputDirectory = Path.Combine(exeDirectory, "Output");
+            string outputDirectory = Path.Combine(projectDirectory, "Output");
 
             // Cria as pastas se não existirem
             if (!Directory.Exists(inputDirectory))
@@ -35,9 +36,10 @@ namespace CompApp
 
             // Define os caminhos completos dos arquivos
             string inputPath = Path.Combine(inputDirectory, "codigo_entrada.txt");
+            Console.WriteLine($"SUPERTESTECAMINHOAAAA");
             string outputPath = Path.Combine(outputDirectory, "codigo_objeto.txt");
 
-            // Verifica se argumentos foram passados
+            // Verifica se argumentos foram passados (tratativa da tentativa do cli)
             if (args.Length == 0)
             {
                 // Se nenhum argumento for passado, realiza a compilação e execução automaticamente
@@ -95,7 +97,7 @@ namespace CompApp
             Parser parser = new Parser(tokens);
             var ast = parser.Parse();
             Console.WriteLine("\nAST gerada:");
-            if (ast != null)
+            if (ast != null) // Print da AST
             {
                 ASTPrinter printer = new ASTPrinter();
                 printer.Print(ast);
@@ -109,6 +111,8 @@ namespace CompApp
 
             // Análise Semântica
             SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
+            semanticAnalyzer.symbolTable.methodName = parser.methodName;
+            semanticAnalyzer.symbolTable.parametersNumber = parser.argumentsNumber;
             semanticAnalyzer.Analyze(ast);
             Console.WriteLine("\nAnálise semântica concluída.");
 
